@@ -9,7 +9,7 @@ Installation
 Add this line to your application's Gemfile:
 
 ```shell
-gem 'nested_attributes_uniqueness', '~> 1.0.2', github: 'jitendra/nested_attributes_uniqueness'
+gem 'nested_attributes_uniqueness', '~> 1.0.3', github: 'jitendra/nested_attributes_uniqueness'
 ```
 
 And then install dependencies using bundler:

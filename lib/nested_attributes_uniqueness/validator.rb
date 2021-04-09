@@ -95,18 +95,17 @@ module NestedAttributesUniqueness
       def existing_record_with_attribute?(record, attribute, collection, options)
         record_id              = record.id
         collection_ids         = collection.map(&:id).compact
-        record_attribute_value = ActiveRecord::Base.connection.quote(record.public_send(attribute))
+        record_attribute_value = record.public_send(attribute)
 
-        if record_attribute_value.is_a? Numeric
-          query = "#{ attribute.to_s } = #{ record_attribute_value }"
-        else
-          query = "#{ attribute.to_s } = '#{ record_attribute_value }'"
-        end
+        where_query = "#{ attribute.to_s } = ?"
+        where_parameters = [record_attribute_value]
+
         if record_id.present? && collection_ids.present?
-          ids_query_string = "(#{ collection_ids.join(',') })"
-          query += " AND id NOT IN #{ ids_query_string }"
+          where_query += " AND id NOT IN (?)"
+          where_parameters << collection_ids
         end
-        existing_records = record.class.where(query)
+
+        existing_records = record.class.where(where_query, *where_parameters)
         records_exists   = existing_records.present?
         if options[:scope]
           scope_value = record.public_send(options[:scope])
