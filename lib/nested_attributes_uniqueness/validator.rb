@@ -95,7 +95,7 @@ module NestedAttributesUniqueness
       def existing_record_with_attribute?(record, attribute, collection, options)
         record_id              = record.id
         collection_ids         = collection.map(&:id).compact
-        record_attribute_value = record.public_send(attribute)
+        record_attribute_value = ActiveRecord::Base.connection.quote(record.public_send(attribute))
 
         if record_attribute_value.is_a? Numeric
           query = "#{ attribute.to_s } = #{ record_attribute_value }"
